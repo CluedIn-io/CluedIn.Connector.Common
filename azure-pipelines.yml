@@ -1,0 +1,51 @@
+name: $(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  branches:
+    include:
+    - develop
+    - master
+    - release/*
+
+pr:
+  branches:
+    include:
+    - develop
+    - master
+    - release/*
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: CluedIn-io/AzurePipelines.Templates
+      endpoint: 'CluedIn-io'
+      ref: refs/heads/refactor
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  - group: nuget
+  - name: testFolderPath
+    value: '$(Build.SourcesDirectory)/test'
+  - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
+    value: true
+  - name: DOTNET_CLI_TELEMETRY_OPTOUT
+    value: true
+  - name: buildConfiguration
+    value: Release
+
+steps:
+
+  # Configure NuGet
+- pwsh: |
+    @('develop','release','AzurePipelines') | ForEach-Object{
+        dotnet nuget update  source $_ -p $env:NUGET_KEY -u VssSessionToken --configfile nuget.config
+    }
+  condition: and(succeeded(), variables['nuget.key'])
+  displayName: 'Add api token to access nuget artifacts'
+  env:
+    NUGET_KEY: $(nuget.key)
+
+- template: crawler.build.yml@templates

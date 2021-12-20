@@ -92,7 +92,7 @@ csharp_style_conditional_delegate_call = true : suggestion
 csharp_style_throw_expression = true : suggestion
 
 # Code block preferences
-csharp_prefer_braces = true : suggestion
+csharp_prefer_braces = false : suggestion
 
 ## Formatting conventions
 # Dotnet formatting settings:
@@ -187,7 +187,7 @@ dotnet_naming_rule.public_field_naming.style = pascal_case_style
 dotnet_naming_rule.public_field_naming.severity = suggestion
 
 dotnet_naming_symbols.public_field_symbol.applicable_kinds = field
-dotnet_naming_symbols.public_field_symbol.applicable_accessibilities = public, internal, protected
+dotnet_naming_symbols.public_field_symbol.applicable_accessibilities = public, internal
 
 # Other fields
 dotnet_naming_rule.other_field_naming.symbols = other_field_symbol
