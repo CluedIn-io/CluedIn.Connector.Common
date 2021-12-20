@@ -98,7 +98,7 @@ csharp_prefer_braces = true : suggestion
 # Dotnet formatting settings:
 [*.{cs,vb}]
 # Organize usings
-dotnet_sort_system_directives_first = true
+dotnet_sort_system_directives_first = false
 
 # CSharp formatting settings:
 [*.cs]

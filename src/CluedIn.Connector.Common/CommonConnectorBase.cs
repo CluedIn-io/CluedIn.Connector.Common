@@ -6,7 +6,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public abstract class CommonConnectorBase<TConnector, TClient> : ConnectorBase
         where TConnector : CommonConnectorBase<TConnector, TClient>

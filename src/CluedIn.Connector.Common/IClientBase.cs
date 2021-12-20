@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public interface IClientBase<TConnection, TParameter>
         where TConnection : IDbConnection, new()

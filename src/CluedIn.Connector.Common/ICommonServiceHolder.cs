@@ -5,7 +5,7 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public interface ICommonServiceHolder
     {

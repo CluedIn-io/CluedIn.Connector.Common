@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public abstract class SqlConnectorBase<TConnector, TClient> : CommonConnectorBase<TConnector, TClient>
         where TConnector : SqlConnectorBase<TConnector, TClient>

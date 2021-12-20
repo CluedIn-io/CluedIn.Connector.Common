@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public class CommonConnectorCommandBase<TParameter> where TParameter : IDbDataParameter
     {

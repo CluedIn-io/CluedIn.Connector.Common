@@ -1,7 +1,7 @@
 ﻿using CluedIn.Core.Crawling;
 using System.Collections.Generic;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     /// <summary>
     ///     Used to connect and  wrap configurations to CrawlJobData. Because crawler methods are designed to pass around

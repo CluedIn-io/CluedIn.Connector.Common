@@ -2,7 +2,7 @@
 using Castle.Windsor;
 using System.Reflection;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public class CommonStaticServiceHolder
     {

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public abstract class ConfigurationConstantsBase : IConfigurationConstants
     {
@@ -41,7 +41,7 @@ namespace Connector.Common
 
         private ComponentEmailDetails ComponentEmailDetails => new ComponentEmailDetails
         {
-            Features = new Dictionary<string, string> {{FeatureCategory, FeatureDescription}},
+            Features = new Dictionary<string, string> { { FeatureCategory, FeatureDescription } },
             Icon = ProviderIconFactory.CreateConnectorUri(ProviderId),
             ProviderName = ProviderName,
             ProviderId = ProviderId
@@ -57,7 +57,9 @@ namespace Connector.Common
 
         public Guide Guide => new Guide
         {
-            Instructions = GuideInstructions, Value = new List<string> {About}, Details = GuideDetails
+            Instructions = GuideInstructions,
+            Value = new List<string> { About },
+            Details = GuideDetails
         };
 
         public IProviderMetadata CreateProviderMetadata()

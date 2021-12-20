@@ -1,4 +1,4 @@
-﻿namespace Connector.Common
+﻿namespace CluedIn.Connector.Common
 {
     // TODO: ROK: some of these properties are not common and need to be in specific connectors
     public static class CommonConfigurationNames

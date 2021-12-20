@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public static class StringSanitizer
     {

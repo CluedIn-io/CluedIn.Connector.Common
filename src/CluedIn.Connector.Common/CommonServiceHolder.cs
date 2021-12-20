@@ -6,7 +6,7 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public class CommonServiceHolder : ICommonServiceHolder
     {
@@ -41,7 +41,8 @@ namespace Connector.Common
             // Strip non-alpha numeric characters
             var cleanName = Regex.Replace(name, @"[^A-Za-z0-9]+", "");
 
-            if (!await checkTableExistPredicate(executionContext, providerDefinitionId, cleanName)) return cleanName;
+            if (!await checkTableExistPredicate(executionContext, providerDefinitionId, cleanName))
+                return cleanName;
 
             // If exists, append count like in windows explorer
             var count = 0;

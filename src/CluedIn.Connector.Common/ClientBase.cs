@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public abstract class ClientBase<TConnection, TParameter> : IClientBase<TConnection, TParameter>
         where TConnection : DbConnection, new()
@@ -64,7 +64,8 @@ namespace Connector.Common
             string collectionName, string restrictionValue = null)
         {
             await using var connection = await GetConnection(config);
-            if (string.IsNullOrWhiteSpace(restrictionValue)) return connection.GetSchema(collectionName);
+            if (string.IsNullOrWhiteSpace(restrictionValue))
+                return connection.GetSchema(collectionName);
 
             var restrictions = new string[4];
             restrictions[2] = restrictionValue;

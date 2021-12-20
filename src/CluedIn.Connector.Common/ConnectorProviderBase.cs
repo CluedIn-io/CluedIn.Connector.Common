@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common
 {
     public abstract class ConnectorProviderBase<TConnectorProvider> : ProviderBase, IExtendedProviderMetadata
         where TConnectorProvider : ConnectorProviderBase<TConnectorProvider>
