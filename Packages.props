@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup Label="Dependency Versions">   
+    <_CluedIn>3.2.5-*</_CluedIn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+        Specified versions for dependencies across the solution
+
+        MUST SPECIFY IN CSPROJ AS <PackageReference Name="<depName>" />
+    -->
+    <PackageReference Update="CluedIn.Core" Version="$(_CluedIn)" />
+    <PackageReference Update="CluedIn.DataStore" Version="$(_CluedIn)" />
+  </ItemGroup>
+</Project>

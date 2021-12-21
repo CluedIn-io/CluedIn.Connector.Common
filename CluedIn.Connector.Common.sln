@@ -5,6 +5,30 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CluedIn.Connector.Common", "src\CluedIn.Connector.Common\CluedIn.Connector.Common.csproj", "{98AD320B-8415-4605-98A0-3F479F05CA95}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{9919A6B5-BBA9-4A88-9084-E6C099025F41}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F7C0EE1B-7F6C-4B2E-99AB-3345DA66E5D0}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code Style", "Code Style", "{9C4B34BE-212C-426D-8256-FD497E912220}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{965438B9-94E3-42BD-AAC6-BD1804D535CB}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{56F1F857-9E4F-4D49-B538-0F5CFBEB958D}"
+	ProjectSection(SolutionItems) = preProject
+		Packages.props = Packages.props
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +42,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F7C0EE1B-7F6C-4B2E-99AB-3345DA66E5D0} = {9919A6B5-BBA9-4A88-9084-E6C099025F41}
+		{9C4B34BE-212C-426D-8256-FD497E912220} = {9919A6B5-BBA9-4A88-9084-E6C099025F41}
+		{965438B9-94E3-42BD-AAC6-BD1804D535CB} = {9919A6B5-BBA9-4A88-9084-E6C099025F41}
+		{56F1F857-9E4F-4D49-B538-0F5CFBEB958D} = {9919A6B5-BBA9-4A88-9084-E6C099025F41}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E6A866CB-824C-4271-8EA6-053B7FC4B134}
