@@ -26,7 +26,6 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  - group: nuget
   - name: testFolderPath
     value: '$(Build.SourcesDirectory)/test'
   - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
@@ -39,13 +38,7 @@ variables:
 steps:
 
   # Configure NuGet
-- pwsh: |
-    @('develop','release','AzurePipelines') | ForEach-Object{
-        dotnet nuget update  source $_ -p $env:NUGET_KEY -u VssSessionToken --configfile nuget.config
-    }
-  condition: and(succeeded(), variables['nuget.key'])
-  displayName: 'Add api token to access nuget artifacts'
-  env:
-    NUGET_KEY: $(nuget.key)
+  - task: NuGetAuthenticate@0
+    displayName: 'Authenticate with nuget'
 
-- template: crawler.build.yml@templates
+  - template: crawler.build.yml@templates
