@@ -1,8 +1,10 @@
 ﻿using CluedIn.Core.Connectors;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common
@@ -35,6 +37,11 @@ namespace CluedIn.Connector.Common
                     if (!(parameterType.IsArray
                           || parameterType.IsGenericType))
                         cmd.Parameters.Add(parameter);
+                    else
+                    {
+                        parameter.Value = string.Join(",", ((IList)parameter.Value).Cast<string>());
+                        cmd.Parameters.Add(parameter);
+                    }
                 }
 
             await cmd.ExecuteNonQueryAsync();
