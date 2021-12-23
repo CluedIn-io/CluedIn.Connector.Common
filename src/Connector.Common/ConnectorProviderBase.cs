@@ -1,4 +1,5 @@
-﻿using CluedIn.Core;
+﻿using CluedIn.Connector.Common.Configurations;
+using CluedIn.Core;
 using CluedIn.Core.Crawling;
 using CluedIn.Core.Data.Relational;
 using CluedIn.Core.Providers;
