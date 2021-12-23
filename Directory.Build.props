@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup Label="Compilation Metadata">
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Assembly Metadata">
+    <AssemblyVersion>$([System.Text.RegularExpressions.Regex]::Match($(Version), '\d+\.\d+').Value)</AssemblyVersion>
+    <FileVersion>$([System.Text.RegularExpressions.Regex]::Match($(Version), '\d+\.\d+.\d+').Value)</FileVersion>
+    <Company>CluedIn ApS</Company>
+    <Copyright>Copyright (c) 2020 $(Company). All rights reserved.</Copyright>
+    <Product>CluedIn</Product>
+    <AssemblyTitle>$(MSBuildProjectName)</AssemblyTitle>
+    <AssemblyName>$(Product).$(AssemblyTitle)</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package Metadata">
+    <Title>$(RootNamespace)</Title>
+    <Authors>$(Company)</Authors>
+    <!-- TODO: Licensing -->
+    <!-- <PackageLicenseFile> if not using an open source license should be set to the path of a license _in_ the package -->
+    <!-- <PackageRequireLicenseAcceptance> should be set to true if a license is included -->
+    <PackageProjectUrl>http://cluedin.com</PackageProjectUrl>
+    <PackageIcon>nugetlogo.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup Label="Package Includes">
+    <None Include="$(MSBuildThisFileDirectory)build\assets\nugetlogo.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

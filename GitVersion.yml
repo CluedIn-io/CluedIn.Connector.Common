@@ -1,0 +1,9 @@
+# GitVersion.yml
+mode: ContinuousDeployment
+next-version: 3.2.5
+branches:
+  master:
+    mode: ContinuousDelivery
+  pull-request:
+    tag: pr
+    increment: None

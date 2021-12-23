@@ -1,0 +1,9 @@
+{
+  "sdk": {
+    "version": "3.1.201",
+    "rollForward": "latestFeature"
+  },
+  "msbuild-sdks": {
+    "Microsoft.Build.CentralPackageVersions": "2.0.52"
+  }
+}

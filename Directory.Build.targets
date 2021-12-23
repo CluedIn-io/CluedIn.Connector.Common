@@ -1,0 +1,21 @@
+<Project>
+    <!-- Ensure the targets for Central package management are imported -->
+    <Import Project="Sdk.targets" Sdk="Microsoft.Build.CentralPackageVersions"/>
+    
+    <Target Name="ValidateAssemblyMeta" BeforeTargets="Build">
+        <Warning Code="CIQ0001" Text="`Product` [$(Product)] must be 'CluedIn'." Condition="'$(Product)' != 'CluedIn'"/>
+        <Warning Code="CIQ0002" Text="`AssemblyTitle` [$(AssemblyTitle)] must match project name [$(MSBuildProjectName)]." Condition="'$(AssemblyTitle)' != '$(MSBuildProjectName)'"/>
+        <Warning Code="CIQ0003" Text="`AssemblyName` [$(AssemblyName)] must match `Product.AssemblyTitle` [$(Product).$(AssemblyTitle)]." Condition="'$(AssemblyName)' != '$(Product).$(AssemblyTitle)'"/>
+        <Warning Code="CIQ0004" Text="`RootNamespace` [$(RootNamespace)] must match `AssemblyName` [$(AssemblyName)]." Condition="'$(RootNamespace)' != '$(AssemblyName)'"/>
+    </Target>
+
+    <Target Name="ValidatePackMeta" BeforeTargets="Pack" Condition="'$(IsPackable)' == 'true'">
+        <Warning Code="CIQ1001" Text="`PackageId` [$(PackageId)] must match `AssemblyName` [$(AssemblyName)] for packable projects." Condition="'$(PackageId)' != '$(AssemblyName)'"/>
+        <Warning Code="CIQ1002" Text="`PackageVersion` [$(PackageVersion)] must match `Version` [$(Version)] for packable projects." Condition="'$(PackageVersion)' != '$(Version)'"/>
+        <Warning Code="CIQ1003" Text="`Authors` [$(Authors)] must match `Company` [$(Company)] for packable projects." Condition="'$(Authors)' != '$(Company)'"/>
+        <Warning Code="CIQ1004" Text="`Title` [$(Title)] must match `RootNamespace` [$(RootNamespace)] for packable projects." Condition="'$(Title)' != '$(RootNamespace)'"/>
+        <Warning Code="CIQ1005" Text="`Description` must be provided for packable projects." Condition="'$(Description)' == ''"/>
+        <Warning Code="CIQ1006" Text="`Copyright` must be provided for packable projects." Condition="'$(Copyright)' == ''"/>
+    </Target>
+
+</Project>
