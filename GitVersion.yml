@@ -1,6 +1,6 @@
 # GitVersion.yml
 mode: ContinuousDeployment
-next-version: 1.0
+next-version: 3.2.5
 branches:
   master:
     mode: ContinuousDelivery
