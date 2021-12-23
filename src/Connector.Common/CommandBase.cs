@@ -3,7 +3,7 @@ using System.Data;
 
 namespace CluedIn.Connector.Common
 {
-    public class CommonConnectorCommandBase<TParameter> where TParameter : IDbDataParameter
+    public class CommandBase<TParameter> where TParameter : IDbDataParameter
     {
         public string Text { get; set; }
 

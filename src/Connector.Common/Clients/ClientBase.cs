@@ -1,11 +1,13 @@
 ﻿using CluedIn.Core.Connectors;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace Connector.Common
+namespace CluedIn.Connector.Common.Clients
 {
     public abstract class ClientBase<TConnection, TParameter> : IClientBase<TConnection, TParameter>
         where TConnection : DbConnection, new()
@@ -35,6 +37,11 @@ namespace Connector.Common
                     if (!(parameterType.IsArray
                           || parameterType.IsGenericType))
                         cmd.Parameters.Add(parameter);
+                    else
+                    {
+                        parameter.Value = string.Join(",", ((IList)parameter.Value).Cast<string>());
+                        cmd.Parameters.Add(parameter);
+                    }
                 }
 
             await cmd.ExecuteNonQueryAsync();
