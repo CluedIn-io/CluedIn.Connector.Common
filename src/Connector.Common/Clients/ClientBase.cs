@@ -33,15 +33,16 @@ namespace CluedIn.Connector.Common.Clients
                         ? parameter.Value.GetType()
                         : typeof(string);
 
-                    // check if parameter type is safe to add
-                    if (!(parameterType.IsArray
-                          || parameterType.IsGenericType))
-                        cmd.Parameters.Add(parameter);
-                    else
+                    // check if parameterType it's an Array or List, covert the Value to string, to be supported.
+                    if (parameterType.IsArray || parameterType.IsGenericType)
                     {
                         parameter.Value = string.Join(",", ((IList)parameter.Value).Cast<string>());
-                        cmd.Parameters.Add(parameter);
                     }
+
+                    // TODO: Further investigate, futureproof and test a proper way to hadle if the Value's object is not a List<>.
+                    // If not handled in the above condition, it will fail when we add the Parameter to the command.
+                    cmd.Parameters.Add(parameter);
+
                 }
 
             await cmd.ExecuteNonQueryAsync();
