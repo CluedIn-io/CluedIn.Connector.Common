@@ -1,7 +1,7 @@
 ﻿using CluedIn.Core.Providers;
 using System;
 
-namespace CluedIn.Connector.Common
+namespace CluedIn.Connector.Common.Configurations
 {
     /// <summary>
     ///     Base interface for configuration constants.

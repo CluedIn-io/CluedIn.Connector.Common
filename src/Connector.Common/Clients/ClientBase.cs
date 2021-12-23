@@ -1,11 +1,13 @@
 ﻿using CluedIn.Core.Connectors;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace CluedIn.Connector.Common
+namespace CluedIn.Connector.Common.Clients
 {
     public abstract class ClientBase<TConnection, TParameter> : IClientBase<TConnection, TParameter>
         where TConnection : DbConnection, new()
@@ -35,6 +37,11 @@ namespace CluedIn.Connector.Common
                     if (!(parameterType.IsArray
                           || parameterType.IsGenericType))
                         cmd.Parameters.Add(parameter);
+                    else
+                    {
+                        parameter.Value = string.Join(",", ((IList)parameter.Value).Cast<string>());
+                        cmd.Parameters.Add(parameter);
+                    }
                 }
 
             await cmd.ExecuteNonQueryAsync();
@@ -64,8 +71,7 @@ namespace CluedIn.Connector.Common
             string collectionName, string restrictionValue = null)
         {
             await using var connection = await GetConnection(config);
-            if (string.IsNullOrWhiteSpace(restrictionValue))
-                return connection.GetSchema(collectionName);
+            if (string.IsNullOrWhiteSpace(restrictionValue)) return connection.GetSchema(collectionName);
 
             var restrictions = new string[4];
             restrictions[2] = restrictionValue;
