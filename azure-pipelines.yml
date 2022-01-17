@@ -6,6 +6,7 @@ trigger:
     - develop
     - master
     - release/*
+    - ama/*
 
 pr:
   branches:
@@ -13,6 +14,7 @@ pr:
     - develop
     - master
     - release/*
+    - ama/*
 
 resources:
   repositories:
