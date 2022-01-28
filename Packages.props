@@ -1,8 +1,7 @@
 <Project>
-  <PropertyGroup Label="Dependency Versions">   
-    <_CluedIn>3.2.5-*</_CluedIn>
+  <PropertyGroup Label="Dependency Versions">
+    <_CluedIn>3.3.0-beta.*</_CluedIn>
   </PropertyGroup>
-
   <ItemGroup>
     <!--
         Specified versions for dependencies across the solution
