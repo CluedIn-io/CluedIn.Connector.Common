@@ -9,6 +9,8 @@ namespace CluedIn.Connector.Common.Caching
 {
     public class SqlServerCachingService<TItem, TConfiguration> : ICachingService<TItem, TConfiguration>
     {
+        public object Locker { get; }
+
         private readonly string _connectionString;
         private readonly string _primaryConnectionStringKeyName = "Streams.Common.SqlCacheConnectionString";
         private readonly string _fallbackConnectionStringKeyName = Core.Constants.Configuration.ConnectionStrings.CluedInEntities;
@@ -22,6 +24,7 @@ namespace CluedIn.Connector.Common.Caching
 
         private SqlServerCachingService()
         {
+            Locker = new object();
             var connectionStringSettings = ConfigurationManagerEx.ConnectionStrings[_primaryConnectionStringKeyName] ??
                 ConfigurationManagerEx.ConnectionStrings[_fallbackConnectionStringKeyName];
 
@@ -105,7 +108,7 @@ namespace CluedIn.Connector.Common.Caching
         }
 
         private async Task EnsureTableCreated()
-        {            
+        {
             var createSchema = @$"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name='{_schemaName}')
                                     EXEC('CREATE SCHEMA [{_schemaName}]')";
 
@@ -117,7 +120,7 @@ namespace CluedIn.Connector.Common.Caching
                                     {_configurationColumn} varchar(max) not null
                                     )";
 
-            await ExecuteNonQuery(createTable);            
+            await ExecuteNonQuery(createTable);
         }
     }
 }

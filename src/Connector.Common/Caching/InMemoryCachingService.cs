@@ -7,10 +7,12 @@ namespace CluedIn.Connector.Common.Caching
     public class InMemoryCachingService<TItem, TConfiguration> : ICachingService<TItem, TConfiguration>
         where TConfiguration : class
     {
+        public object Locker { get; }
         private List<KeyValuePair<TItem, TConfiguration>> _storage;
 
         public InMemoryCachingService()
         {
+            Locker = new object();
             _storage = new List<KeyValuePair<TItem, TConfiguration>>();
         }
 
