@@ -108,7 +108,7 @@ namespace CluedIn.Connector.Common.Caching
         }
 
         private async Task EnsureTableCreated()
-        {            
+        {
             var createSchema = @$"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name='{_schemaName}')
                                     EXEC('CREATE SCHEMA [{_schemaName}]')";
 
@@ -120,7 +120,7 @@ namespace CluedIn.Connector.Common.Caching
                                     {_configurationColumn} varchar(max) not null
                                     )";
 
-            await ExecuteNonQuery(createTable);            
+            await ExecuteNonQuery(createTable);
         }
     }
 }

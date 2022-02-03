@@ -45,6 +45,6 @@ namespace CluedIn.Connector.Common.Caching
         public Task<IQueryable<KeyValuePair<TItem, TConfiguration>>> GetItems()
         {
             return Task.FromResult(_storage.AsQueryable());
-        }        
+        }
     }
 }
