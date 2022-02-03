@@ -30,5 +30,10 @@ namespace CluedIn.Connector.Common.Caching
         /// Clear items from cache related to target configuration
         /// </summary>        
         Task Clear(TConfiguration configuration);
+
+        /// <summary>
+        /// Provides synchronization object to use for locking critical sections
+        /// </summary>        
+        object Locker { get; }
     }
 }

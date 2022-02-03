@@ -9,6 +9,8 @@ namespace CluedIn.Connector.Common.Caching
 {
     public class SqlServerCachingService<TItem, TConfiguration> : ICachingService<TItem, TConfiguration>
     {
+        public object Locker { get; }
+
         private readonly string _connectionString;
         private readonly string _primaryConnectionStringKeyName = "Streams.Common.SqlCacheConnectionString";
         private readonly string _fallbackConnectionStringKeyName = Core.Constants.Configuration.ConnectionStrings.CluedInEntities;
@@ -22,6 +24,7 @@ namespace CluedIn.Connector.Common.Caching
 
         private SqlServerCachingService()
         {
+            Locker = new object();
             var connectionStringSettings = ConfigurationManagerEx.ConnectionStrings[_primaryConnectionStringKeyName] ??
                 ConfigurationManagerEx.ConnectionStrings[_fallbackConnectionStringKeyName];
 
