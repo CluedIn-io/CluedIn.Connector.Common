@@ -1,6 +1,8 @@
 ﻿using CluedIn.Core.Configuration;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
+using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +11,8 @@ namespace CluedIn.Connector.Common.Caching
 {
     public class SqlServerCachingService<TItem, TConfiguration> : ICachingService<TItem, TConfiguration>
     {
+        public object Locker { get; }
+
         private readonly string _connectionString;
         private readonly string _primaryConnectionStringKeyName = "Streams.Common.SqlCacheConnectionString";
         private readonly string _fallbackConnectionStringKeyName = Core.Constants.Configuration.ConnectionStrings.CluedInEntities;
@@ -22,6 +26,7 @@ namespace CluedIn.Connector.Common.Caching
 
         private SqlServerCachingService()
         {
+            Locker = new object();
             var connectionStringSettings = ConfigurationManagerEx.ConnectionStrings[_primaryConnectionStringKeyName] ??
                 ConfigurationManagerEx.ConnectionStrings[_fallbackConnectionStringKeyName];
 
@@ -43,11 +48,24 @@ namespace CluedIn.Connector.Common.Caching
         {
             var serializedData = JsonConvert.SerializeObject(item);
             var serializedConfiguration = JsonConvert.SerializeObject(configuration);
-
             var query = $@"INSERT INTO {_tableName} ({_dataColumn}, {_configurationColumn})
-                        VALUES ('{serializedData}', '{serializedConfiguration}');";
+                        VALUES ('@{_dataColumn}', '@{_configurationColumn}');";
 
-            await ExecuteNonQuery(query);
+            var parameters = new[]
+            {
+                new SqlParameter($"@{_dataColumn}", serializedData),
+                new SqlParameter($"@{_configurationColumn}", serializedConfiguration)
+            };
+
+            try
+            {
+                await ExecuteNonQuery(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Can't store item:\n {serializedData} \n with configurations:\n {serializedConfiguration}");
+                throw;
+            }
         }
 
         public async Task Clear()
@@ -95,17 +113,20 @@ namespace CluedIn.Connector.Common.Caching
             return result.AsQueryable();
         }
 
-        private async Task<int> ExecuteNonQuery(string query)
+        private async Task<int> ExecuteNonQuery(string query, SqlParameter[] parameters = null)
         {
             using var connection = new SqlConnection(_connectionString);
             var command = new SqlCommand(query, connection);
+            if (parameters != null && parameters.Any())
+                command.Parameters.AddRange(parameters);
+
             await command.Connection.OpenAsync();
 
             return await command.ExecuteNonQueryAsync();
         }
 
         private async Task EnsureTableCreated()
-        {            
+        {
             var createSchema = @$"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name='{_schemaName}')
                                     EXEC('CREATE SCHEMA [{_schemaName}]')";
 
@@ -117,7 +138,7 @@ namespace CluedIn.Connector.Common.Caching
                                     {_configurationColumn} varchar(max) not null
                                     )";
 
-            await ExecuteNonQuery(createTable);            
+            await ExecuteNonQuery(createTable);
         }
     }
 }
