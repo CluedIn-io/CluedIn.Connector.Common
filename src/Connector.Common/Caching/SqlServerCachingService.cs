@@ -49,7 +49,7 @@ namespace CluedIn.Connector.Common.Caching
             var serializedData = JsonConvert.SerializeObject(item);
             var serializedConfiguration = JsonConvert.SerializeObject(configuration);
             var query = $@"INSERT INTO {_tableName} ({_dataColumn}, {_configurationColumn})
-                        VALUES ('@{_dataColumn}', '@{_configurationColumn}');";
+                        VALUES (@{_dataColumn}, @{_configurationColumn});";
 
             var parameters = new[]
             {
