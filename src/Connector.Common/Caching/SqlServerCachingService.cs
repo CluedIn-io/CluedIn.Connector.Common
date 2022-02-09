@@ -18,27 +18,31 @@ namespace CluedIn.Connector.Common.Caching
         private readonly string _fallbackConnectionStringKeyName = Core.Constants.Configuration.ConnectionStrings.CluedInEntities;
 
         private readonly string _schemaName = "Streams";
-        private readonly string _noSchemaTableName = "SqlCaching";
-        private readonly string _tableName = $"Streams.SqlCaching";
+        private readonly string _tableNamePrefix = "SqlCaching";
+        private readonly string _noSchemaTableName;
+        private readonly string _tableName;
 
         private readonly string _configurationColumn = "Configuration";
         private readonly string _dataColumn = "Data";
 
-        private SqlServerCachingService()
+        private SqlServerCachingService(string id)
         {
             Locker = new object();
             var connectionStringSettings = ConfigurationManagerEx.ConnectionStrings[_primaryConnectionStringKeyName] ??
                 ConfigurationManagerEx.ConnectionStrings[_fallbackConnectionStringKeyName];
 
-            _connectionString = connectionStringSettings.ConnectionString;
+            _connectionString = connectionStringSettings.ConnectionString;            
+            _noSchemaTableName = $"{_tableNamePrefix}{id}";
+            _tableName = $"{_schemaName}.{_tableNamePrefix}{id}";
         }
 
         /// <summary>
         /// Create and set up service SqlServerCachingService instance.
-        /// </summary>        
-        public static async Task<SqlServerCachingService<TItem, TConfiguration>> CreateCachingService()
+        /// </summary>
+        /// <param name="id">unique connector identifier</param>        
+        public static async Task<SqlServerCachingService<TItem, TConfiguration>> CreateCachingService(string id)
         {
-            var service = new SqlServerCachingService<TItem, TConfiguration>();
+            var service = new SqlServerCachingService<TItem, TConfiguration>(id);
             await service.EnsureTableCreated();
 
             return service;
