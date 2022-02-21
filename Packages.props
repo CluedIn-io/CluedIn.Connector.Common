@@ -1,8 +1,7 @@
 <Project>
-  <PropertyGroup Label="Dependency Versions">   
-    <_CluedIn>3.2.5-*</_CluedIn>
+  <PropertyGroup Label="Dependency Versions">
+    <_CluedIn>3.3.0-*</_CluedIn>
   </PropertyGroup>
-
   <ItemGroup>
     <!--
         Specified versions for dependencies across the solution
@@ -11,5 +10,11 @@
     -->
     <PackageReference Update="CluedIn.Core" Version="$(_CluedIn)" />
     <PackageReference Update="CluedIn.DataStore" Version="$(_CluedIn)" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Update="AutoFixture.Xunit2" Version="4.11.0" />
+    <PackageReference Update="coverlet.msbuild" Version="2.8.0" />
+    <PackageReference Update="xunit" Version="2.4.1" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Update="Moq" Version="4.13.1" />
   </ItemGroup>
 </Project>

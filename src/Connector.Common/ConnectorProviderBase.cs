@@ -42,6 +42,8 @@ namespace CluedIn.Connector.Common
         public Guide Guide => _configurationConstants.Guide;
         public new IntegrationType Type => _configurationConstants.Type;
 
+        public override bool ScheduleCrawlJobs => false;
+
         /// <summary>
         ///     Usually called first from Crawler methods. Don't have much impact.
         /// </summary>
