@@ -2,12 +2,16 @@
   <PropertyGroup Label="Compilation Metadata">
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+  
+  <PropertyGroup>
+      <Version Condition="$(GITVERSION_SHORTSHA) != ''">$(Version)-$(GITVERSION_SHORTSHA)</Version>
+  </PropertyGroup>
 
   <PropertyGroup Label="Assembly Metadata">
     <AssemblyVersion>$([System.Text.RegularExpressions.Regex]::Match($(Version), '\d+\.\d+').Value)</AssemblyVersion>
     <FileVersion>$([System.Text.RegularExpressions.Regex]::Match($(Version), '\d+\.\d+.\d+').Value)</FileVersion>
     <Company>CluedIn ApS</Company>
-    <Copyright>Copyright (c) 2020 $(Company). All rights reserved.</Copyright>
+    <Copyright>Copyright (c) 2022 $(Company). All rights reserved.</Copyright>
     <Product>CluedIn</Product>
     <AssemblyTitle>$(MSBuildProjectName)</AssemblyTitle>
     <AssemblyName>$(Product).$(AssemblyTitle)</AssemblyName>
