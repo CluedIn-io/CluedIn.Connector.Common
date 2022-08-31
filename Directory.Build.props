@@ -2,6 +2,10 @@
   <PropertyGroup Label="Compilation Metadata">
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+  
+  <PropertyGroup>
+      <Version Condition="$(GITVERSION_SHORTSHA) != ''">$(Version)-$(GITVERSION_SHORTSHA)</Version>
+  </PropertyGroup>
 
   <PropertyGroup Label="Assembly Metadata">
     <AssemblyVersion>$([System.Text.RegularExpressions.Regex]::Match($(Version), '\d+\.\d+').Value)</AssemblyVersion>
