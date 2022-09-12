@@ -35,11 +35,30 @@ namespace CluedIn.Connector.Common.Connectors
                 return false;
             }
         }
+        public override Task<string> GetValidDataTypeName(ExecutionContext executionContext, Guid providerDefinitionId,
+            string name)
+        {
+            return Task.FromResult(SqlStringSanitizer.Sanitize(name));
+        }
 
         public override async Task<string> GetValidContainerName(ExecutionContext executionContext,
             Guid providerDefinitionId, string name)
         {
-            return await GetValidContainerName(executionContext, providerDefinitionId, name, CheckTableExists);
+            var cleanName = SqlStringSanitizer.Sanitize(name);
+
+            if (!await CheckTableExists(executionContext, providerDefinitionId, cleanName))
+                return cleanName;
+
+            // If exists, append count like in windows explorer
+            var count = 0;
+            string newName;
+            do
+            {
+                count++;
+                newName = $"{cleanName}{count}";
+            } while (await CheckTableExists(executionContext, providerDefinitionId, newName));
+
+            return newName;
         }
 
         protected virtual string BuildEmptyContainerSql(string tableName)
