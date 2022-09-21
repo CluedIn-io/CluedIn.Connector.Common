@@ -53,9 +53,7 @@ namespace CluedIn.Connector.Common.Connectors
                 newName = $"{cleanName}{count}";
             } while (await checkTableExistPredicate(executionContext, providerDefinitionId, newName));
 
-            cleanName = newName;
-
-            return cleanName;
+            return newName;
         }
     }
 }
