@@ -42,3 +42,6 @@ steps:
     displayName: 'Authenticate with nuget'
 
   - template: crawler.build.yml@templates
+    parameters:
+      githubReleaseInMaster: true
+      publicReleaseForMaster: false
