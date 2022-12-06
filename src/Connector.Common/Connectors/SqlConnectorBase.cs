@@ -2,6 +2,7 @@
 using CluedIn.Connector.Common.Helpers;
 using CluedIn.Core;
 using CluedIn.Core.DataStore;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,24 +11,27 @@ using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common.Connectors
 {
-    public abstract class SqlConnectorBase<TConnector, TConnection, TParameter> : CommonConnectorBase<TConnector, IClientBase<TConnection, TParameter>>
-        where TConnector : SqlConnectorBase<TConnector, TConnection, TParameter>
-        where TConnection : IDbConnection, new()
-        where TParameter : IDbDataParameter
+    public abstract class SqlConnectorBase : CommonTransactionalConnectorBase
     {
-        protected SqlConnectorBase(IConfigurationRepository repository, ILogger<TConnector> logger, IClientBase<TConnection, TParameter> client,
-            Guid providerId) : base(repository, logger, client, providerId)
+        protected readonly ILogger<SqlConnectorBase> _logger;
+        private readonly ITransactionalClientBase<SqlTransaction, SqlParameter> _client;
+
+        protected SqlConnectorBase(IConfigurationRepository repository, ILogger<SqlConnectorBase> logger, ITransactionalClientBase<SqlTransaction, SqlParameter> client,
+            Guid providerId) : base(repository, providerId)
         {
+            _logger = logger;
+            _client = client;
         }
 
-        public override async Task<bool> VerifyConnection(ExecutionContext executionContext,
-            IDictionary<string, object> config)
+        public override async Task<bool> VerifyConnection(ExecutionContext executionContext, IDictionary<string, object> config)
         {
             try
             {
-                var connection = await _client.GetConnection(config);
+                var transaction = await _client.BeginTransaction(config);
+                var connectionIsOpen = transaction.Connection.State == ConnectionState.Open;
+                await transaction.DisposeAsync();
 
-                return connection.State == ConnectionState.Open;
+                return connectionIsOpen;
             }
             catch (Exception e)
             {
@@ -35,18 +39,29 @@ namespace CluedIn.Connector.Common.Connectors
                 return false;
             }
         }
-        public override Task<string> GetValidDataTypeName(ExecutionContext executionContext, Guid providerDefinitionId,
-            string name)
+
+        public override Task<string> GetValidDataTypeName(ExecutionContext executionContext, Guid providerDefinitionId, string name)
         {
             return Task.FromResult(SqlStringSanitizer.Sanitize(name));
         }
 
-        public override async Task<string> GetValidContainerName(ExecutionContext executionContext,
-            Guid providerDefinitionId, string name)
+        public Task<string> GetValidDataTypeName(string name)
+        {
+            return Task.FromResult(SqlStringSanitizer.Sanitize(name));
+        }
+
+        public override async Task<string> GetValidContainerName(ExecutionContext executionContext, Guid providerDefinitionId, string name)
+        {
+            var config = await GetAuthenticationDetails(executionContext, providerDefinitionId);
+            var transaction = await _client.BeginTransaction(config.Authentication);
+            return await GetValidContainerNameInTransaction(executionContext, providerDefinitionId, transaction, name);
+        }
+
+        public async Task<string> GetValidContainerNameInTransaction(ExecutionContext executionContext, Guid providerDefinitionId, SqlTransaction transaction, string name)
         {
             var cleanName = SqlStringSanitizer.Sanitize(name);
 
-            if (!await CheckTableExists(executionContext, providerDefinitionId, cleanName))
+            if (!await CheckTableExists(executionContext, providerDefinitionId, transaction, cleanName))
                 return cleanName;
 
             // If exists, append count like in windows explorer
@@ -56,7 +71,7 @@ namespace CluedIn.Connector.Common.Connectors
             {
                 count++;
                 newName = $"{cleanName}{count}";
-            } while (await CheckTableExists(executionContext, providerDefinitionId, newName));
+            } while (await CheckTableExists(executionContext, providerDefinitionId, transaction, newName));
 
             return newName;
         }
@@ -66,20 +81,17 @@ namespace CluedIn.Connector.Common.Connectors
             return $"TRUNCATE TABLE [{SqlStringSanitizer.Sanitize(tableName)}]";
         }
 
-        protected virtual async Task<bool> CheckTableExists(ExecutionContext executionContext,
-            Guid providerDefinitionId,
-            string name)
+
+        protected virtual async Task<bool> CheckTableExists(ExecutionContext executionContext, Guid providerDefinitionId, SqlTransaction transaction, string name)
         {
             try
             {
-                var config = await GetAuthenticationDetails(executionContext, providerDefinitionId);
-                var tables = await _client.GetTables(config.Authentication, name);
+                var tables = await _client.GetTables(transaction, name);
 
                 return tables.Rows.Count > 0;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                _logger.LogError(e, $"Error checking Container '{name}' exists for Connector {providerDefinitionId}");
                 return false;
             }
         }
