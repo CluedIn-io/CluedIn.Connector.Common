@@ -7,16 +7,19 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common.Connectors
 {
-    public abstract class SqlConnectorBase : CommonTransactionalConnectorBase
+    public abstract class SqlConnectorBase<TTransaction, TParameter> : CommonTransactionalConnectorBase
+        where TTransaction : IDbTransaction
+        where TParameter : IDbDataParameter
     {
-        protected readonly ILogger<SqlConnectorBase> _logger;
-        private readonly ITransactionalClientBase<SqlTransaction, SqlParameter> _client;
+        protected readonly ILogger<SqlConnectorBase<TTransaction, TParameter>> _logger;
+        private readonly ITransactionalClientBase<TTransaction, TParameter> _client;
 
-        protected SqlConnectorBase(IConfigurationRepository repository, ILogger<SqlConnectorBase> logger, ITransactionalClientBase<SqlTransaction, SqlParameter> client,
+        protected SqlConnectorBase(IConfigurationRepository repository, ILogger<SqlConnectorBase<TTransaction, TParameter>> logger, ITransactionalClientBase<TTransaction, TParameter> client,
             Guid providerId) : base(repository, providerId)
         {
             _logger = logger;
@@ -29,7 +32,7 @@ namespace CluedIn.Connector.Common.Connectors
             {
                 var transaction = await _client.BeginTransaction(config);
                 var connectionIsOpen = transaction.Connection.State == ConnectionState.Open;
-                await transaction.DisposeAsync();
+                transaction.Dispose();
 
                 return connectionIsOpen;
             }
@@ -57,7 +60,7 @@ namespace CluedIn.Connector.Common.Connectors
             return await GetValidContainerNameInTransaction(executionContext, providerDefinitionId, transaction, name);
         }
 
-        public async Task<string> GetValidContainerNameInTransaction(ExecutionContext executionContext, Guid providerDefinitionId, SqlTransaction transaction, string name)
+        public async Task<string> GetValidContainerNameInTransaction(ExecutionContext executionContext, Guid providerDefinitionId, TTransaction transaction, string name)
         {
             var cleanName = SqlStringSanitizer.Sanitize(name);
 
@@ -82,7 +85,7 @@ namespace CluedIn.Connector.Common.Connectors
         }
 
 
-        protected virtual async Task<bool> CheckTableExists(ExecutionContext executionContext, Guid providerDefinitionId, SqlTransaction transaction, string name)
+        protected virtual async Task<bool> CheckTableExists(ExecutionContext executionContext, Guid providerDefinitionId, TTransaction transaction, string name)
         {
             try
             {
