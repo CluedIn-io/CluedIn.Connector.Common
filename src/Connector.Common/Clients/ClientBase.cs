@@ -1,10 +1,8 @@
 ﻿using CluedIn.Core.Connectors;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common.Clients
@@ -21,29 +19,15 @@ namespace CluedIn.Connector.Common.Clients
             var cmd = connection.CreateCommand();
             cmd.CommandText = commandText;
 
-            // use Add instead of AddRange.
-            // We need to check if the object is an typeof List, Array, etc. If it is, then the process will fail because of "The CLR Type <> isn't supported" error.
             if (param != null)
+            {
                 foreach (var parameter in param)
                 {
-                    parameter.Value ??= DBNull.Value;
-
-                    // FIX: for Npgsql mismatches an empty string "" with System.Type
-                    var parameterType = parameter.Value?.ToString() != string.Empty
-                        ? parameter.Value.GetType()
-                        : typeof(string);
-
-                    // check if parameterType it's an Array or List, covert the Value to string, to be supported.
-                    if (parameterType.IsArray || parameterType.IsGenericType)
-                    {
-                        parameter.Value = string.Join(",", ((IList)parameter.Value).Cast<string>());
-                    }
-
-                    // TODO: Further investigate, futureproof and test a proper way to hadle if the Value's object is not a List<>.
-                    // If not handled in the above condition, it will fail when we add the Parameter to the command.
+                    ClientUtils.SanitizeParameter(parameter);
                     cmd.Parameters.Add(parameter);
 
                 }
+            }
 
             await cmd.ExecuteNonQueryAsync();
         }
