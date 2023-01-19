@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common.Clients
 {
-    public abstract class TransactionalClientBase<TConnection, TTransaction, TParameter> : ITransactionalClientBase<TTransaction, TParameter>
+    public abstract class TransactionalClientBase<TConnection, TTransaction, TParameter> : ITransactionalClientBase<TConnection, TTransaction, TParameter>
         where TConnection : DbConnection, new()
         where TTransaction : DbTransaction
         where TParameter : IDbDataParameter
@@ -29,14 +29,14 @@ namespace CluedIn.Connector.Common.Clients
             await cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task<TTransaction> BeginTransaction(IDictionary<string, object> config)
+        public async Task<ConnectionAndTransaction<TConnection, TTransaction>> BeginTransaction(IDictionary<string, object> config)
         {
             var connectionString = BuildConnectionString(config);
             var connection = Activator.CreateInstance(typeof(TConnection), connectionString) as TConnection;
 
             // ReSharper disable once PossibleNullReferenceException
             await connection.OpenAsync();
-            return await connection.BeginTransactionAsync() as TTransaction;
+            return new ConnectionAndTransaction<TConnection, TTransaction>(connection, await connection.BeginTransactionAsync() as TTransaction);
         }
 
         public async Task<DataTable> GetTableColumns(TTransaction transaction, string tableName, string schema = null)
