@@ -12,14 +12,15 @@ using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common.Connectors
 {
-    public abstract class SqlConnectorBase<TTransaction, TParameter> : CommonTransactionalConnectorBase
+    public abstract class SqlConnectorBase<TConnection, TTransaction, TParameter> : CommonTransactionalConnectorBase
+        where TConnection : IDbConnection
         where TTransaction : IDbTransaction
         where TParameter : IDbDataParameter
     {
-        protected readonly ILogger<SqlConnectorBase<TTransaction, TParameter>> _logger;
-        private readonly ITransactionalClientBase<TTransaction, TParameter> _client;
+        protected readonly ILogger<SqlConnectorBase<TConnection, TTransaction, TParameter>> _logger;
+        private readonly ITransactionalClientBase<TConnection, TTransaction, TParameter> _client;
 
-        protected SqlConnectorBase(IConfigurationRepository repository, ILogger<SqlConnectorBase<TTransaction, TParameter>> logger, ITransactionalClientBase<TTransaction, TParameter> client,
+        protected SqlConnectorBase(IConfigurationRepository repository, ILogger<SqlConnectorBase<TConnection, TTransaction, TParameter>> logger, ITransactionalClientBase<TConnection, TTransaction, TParameter> client,
             Guid providerId) : base(repository, providerId)
         {
             _logger = logger;
@@ -30,9 +31,9 @@ namespace CluedIn.Connector.Common.Connectors
         {
             try
             {
-                var transaction = await _client.BeginTransaction(config);
-                var connectionIsOpen = transaction.Connection.State == ConnectionState.Open;
-                transaction.Dispose();
+                await using var connectionAndTransaction = await _client.BeginTransaction(config);
+                var connectionIsOpen = connectionAndTransaction.Connection.State == ConnectionState.Open;
+                await connectionAndTransaction.DisposeAsync();
 
                 return connectionIsOpen;
             }
@@ -56,8 +57,8 @@ namespace CluedIn.Connector.Common.Connectors
         public override async Task<string> GetValidContainerName(ExecutionContext executionContext, Guid providerDefinitionId, string name)
         {
             var config = await GetAuthenticationDetails(executionContext, providerDefinitionId);
-            var transaction = await _client.BeginTransaction(config.Authentication);
-            return await GetValidContainerNameInTransaction(executionContext, providerDefinitionId, transaction, name);
+            await using var connectionAndTransaction = await _client.BeginTransaction(config.Authentication);
+            return await GetValidContainerNameInTransaction(executionContext, providerDefinitionId, connectionAndTransaction.Transaction, name);
         }
 
         public async Task<string> GetValidContainerNameInTransaction(ExecutionContext executionContext, Guid providerDefinitionId, TTransaction transaction, string name)
