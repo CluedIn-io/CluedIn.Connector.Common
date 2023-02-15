@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup Label="Dependency Versions">
-    <_CluedIn>3.4.0-update.*</_CluedIn>
+    <_CluedIn>3.4.1</_CluedIn>
   </PropertyGroup>
   <ItemGroup>
     <!--
