@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common.Connectors
 {
+    [Obsolete("Use CommonTransactionalConnectorBaseV2 instead.")]
     public abstract class CommonTransactionalConnectorBase : ConnectorBase
     {
         protected CommonTransactionalConnectorBase(IConfigurationRepository configurationRepository, Guid providerId) : base(configurationRepository)
