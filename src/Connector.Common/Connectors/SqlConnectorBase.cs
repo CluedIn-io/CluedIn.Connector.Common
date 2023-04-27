@@ -1,17 +1,17 @@
 ﻿using CluedIn.Connector.Common.Clients;
 using CluedIn.Connector.Common.Helpers;
 using CluedIn.Core;
+using CluedIn.Core.Data;
 using CluedIn.Core.DataStore;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common.Connectors
 {
+    [Obsolete("Use SqlConnectorBaseV2 instead.")]
     public abstract class SqlConnectorBase<TConnection, TTransaction, TParameter> : CommonTransactionalConnectorBase
         where TConnection : IDbConnection
         where TTransaction : IDbTransaction
