@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace CluedIn.Connector.Common.Connectors
 {
+    [Obsolete("Use CommonConnectorBaseV2 instead.")]
     public abstract class CommonConnectorBase<TConnector, TClient> : ConnectorBase
         where TConnector : CommonConnectorBase<TConnector, TClient>
     {
