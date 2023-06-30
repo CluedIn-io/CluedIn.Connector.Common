@@ -45,3 +45,13 @@ steps:
     parameters:
       githubReleaseInMaster: true
       publicReleaseForMaster: false
+      
+  # Temp Nuget Push for feature/update-net6
+  - task: NuGetCommand@2
+    displayName: 'Push .NET6 update Nuget packages to Develop feed'
+    condition: and ( succeeded(), in(variables['System.PullRequest.SourceBranch'], 'feature/update-net6'))
+    inputs:
+      command: 'push'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/NuGet/**/*.nupkg'
+      allowPackageConflicts: true
+      publishVstsFeed: 'develop'
